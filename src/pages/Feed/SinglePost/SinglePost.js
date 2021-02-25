@@ -14,7 +14,11 @@ class SinglePost extends Component {
 
     componentDidMount() {
         const postId = this.props.match.params.postId;
-        fetch('http://localhost:8014/feed/post/' + postId)
+        fetch('http://localhost:8014/feed/post/' + postId, {
+                headers: {
+                    Authorization: 'Bearer ' + this.props.token
+                }
+            })
             .then(res => {
                 if (res.status !== 200) {
                     throw new Error('Failed to fetch status');
@@ -27,7 +31,8 @@ class SinglePost extends Component {
                     author: resData.post.creator.name,
                     image: 'http://localhost:8014/' + resData.post.imageUrl,
                     date: new Date(resData.post.createdAt).toLocaleDateString('en-US'),
-                    content: resData.post.content
+                    content: resData.post.content,
+                    comments: resData.post.comments
                 });
             })
             .catch(err => {
@@ -36,6 +41,7 @@ class SinglePost extends Component {
     }
 
     render() {
+        console.log(this.state.comments)
         return ( <
             section className = "single-post" >
             <
@@ -49,7 +55,9 @@ class SinglePost extends Component {
             Image contain imageUrl = { this.state.image }
             /> < /
             div > <
-            p > { this.state.content } < /p> < /
+            p > { this.state.content } < /p>   <
+
+            /
             section >
         );
     }
